@@ -21,6 +21,7 @@ model Product {
   description String?  @db.Text
   price       Decimal? @db.Decimal(15, 2)
   stock       Decimal? @db.Decimal(10, 2)
+  images      String?  @db.Text
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
 }

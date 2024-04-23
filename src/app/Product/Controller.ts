@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import upload from "../../middleware/multerSetup";
+import { saveFile } from "../../services/saveFileServices";
 
 const prisma = new PrismaClient();
 interface bodyType {
@@ -7,6 +9,7 @@ interface bodyType {
   description: string;
   price: number;
   stock: number;
+  images: string;
 }
 
 interface queryParam {
@@ -44,11 +47,25 @@ class Product {
   async post(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const body: bodyType = req.body;
+      // console.log(body);
+      let filePath = null;
+      if (body.images) {
+        //use middleware multer
+        upload.single("file")(req, res, async (err: any) => {
+          if (err) {
+            return next(err);
+          }
+        });
+        //save the file and get FilePath
+        filePath = await saveFile(req);
+      }
+
       const payload = {
         name: body.name,
         description: body.description,
         price: body.price,
         stock: body.stock,
+        images: filePath,
       };
 
       const data = await prisma.product.create({ data: payload });
