@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const userSchema = z
+const userSchema = z
   .object({
     name: z.string(),
     email: z.string().email(),
@@ -9,5 +9,7 @@ export const userSchema = z
   })
   .refine((data) => data.password === data.password_confirmation, {
     path: ["password_confirmation"],
-    message: "Password does not match",
+    message: "does not match",
   });
+
+export default userSchema;

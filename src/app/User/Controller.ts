@@ -18,6 +18,16 @@ class User {
       next(err);
     }
   }
+
+  async post(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      res.status(201).json({
+        message: "Success Create User",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default User;
