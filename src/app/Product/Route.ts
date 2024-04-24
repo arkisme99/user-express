@@ -1,6 +1,6 @@
 import { Router } from "express";
 import productController from "./Controller";
-import findProductById from "../../middleware/findProductById";
+import findProductById from "../../middleware/product/findProductById";
 import { validateData } from "../../middleware/validationMiddleware";
 import { productSchema } from "../../schemas/productSchemas";
 
