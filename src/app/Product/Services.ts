@@ -42,3 +42,25 @@ export const postDataProduct = async (data: Prisma.ProductCreateInput) => {
 export const detailProductById = async (req: Request) => {
   return req.body.product;
 };
+
+export const updateDataProduct = async (
+  data: Prisma.ProductUpdateInput,
+  id: string
+) => {
+  const payload = {
+    name: data.name,
+    description: data.description,
+    price: data.price,
+    stock: data.stock,
+    images: data.images,
+  };
+
+  return await prisma.product.update({
+    where: { id },
+    data: payload,
+  });
+};
+
+export const deleteDataProduct = async (id: string) => {
+  return await prisma.product.delete({ where: { id } });
+};

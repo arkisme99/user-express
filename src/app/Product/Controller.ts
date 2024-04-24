@@ -1,16 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import upload from "../../middleware/multerSetup";
 import { saveFile } from "../../services/saveFileServices";
-import prisma from "../../utils/db";
-import { detailProductById, getAllProducts, postDataProduct } from "./Services";
-
-interface bodyType {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  images: string;
-}
+import {
+  deleteDataProduct,
+  detailProductById,
+  getAllProducts,
+  postDataProduct,
+  updateDataProduct,
+} from "./Services";
 
 class Product {
   async get(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -79,22 +76,50 @@ class Product {
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { id } = req.body.product;
-      const body: bodyType = req.body;
+
+      let filePath = null;
+      if (req.body.images) {
+        //use middleware multer
+        upload.single("file")(req, res, async (err: any) => {
+          if (err) {
+            return next(err);
+          }
+        });
+        //save first the file and get FilePath
+        filePath = await saveFile(req);
+      }
+
       const payload = {
-        name: body.name,
-        description: body.description,
-        price: body.price,
-        stock: body.stock,
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        stock: req.body.stock,
+        imagees: filePath,
       };
 
-      const updateData = await prisma.product.update({
-        where: { id: id },
-        data: payload,
-      });
+      const data = await updateDataProduct(payload, id);
 
       res.status(200).json({
-        status: "success",
-        updateData,
+        message: "Success Update Product",
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async destroy(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.body.product;
+      const data = await deleteDataProduct(id);
+
+      res.status(200).json({
+        message: "Success Delete Product",
+        data,
       });
     } catch (err) {
       next(err);

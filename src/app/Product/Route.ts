@@ -16,6 +16,7 @@ router
 router
   .route("/product/:id")
   .get(FindProductId.handle, controller.show)
-  .put([FindProductId.handle, validateData(productSchema)], controller.update);
+  .put([FindProductId.handle, validateData(productSchema)], controller.update)
+  .delete(FindProductId.handle, controller.destroy);
 
 export default router;
