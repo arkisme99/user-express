@@ -1,7 +1,9 @@
 import express from "express";
 import productRoute from "./app/Product/Route";
+import userRoute from "./app/User/Route";
 import notFound from "./middleware/404";
 import errorHandle from "./middleware/error-handle";
+
 // import cors from "cors";
 import fileUpload from "express-fileupload";
 
@@ -18,6 +20,7 @@ app.use(bodyParser.json()); */
 
 //route
 app.use("/api/v1", productRoute);
+app.use("/api/v1", userRoute);
 
 //middleware
 app.use(notFound);
