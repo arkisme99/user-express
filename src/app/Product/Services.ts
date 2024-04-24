@@ -34,3 +34,20 @@ export async function getAllProducts(
     next(err);
   }
 }
+
+export async function detailProductById(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const data = req.body.product;
+
+    res.status(200).json({
+      status: "success",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+}

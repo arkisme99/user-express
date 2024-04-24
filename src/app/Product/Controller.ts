@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import upload from "../../middleware/multerSetup";
 import { saveFile } from "../../services/saveFileServices";
 import prisma from "../../utils/db";
-import { getAllProducts } from "./Services";
+import { detailProductById, getAllProducts } from "./Services";
 
 interface bodyType {
   name: string;
@@ -53,16 +53,7 @@ class Product {
   }
 
   async show(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const data = req.body.product;
-
-      res.status(200).json({
-        status: "success",
-        data,
-      });
-    } catch (err) {
-      next(err);
-    }
+    return await detailProductById(req, res, next);
   }
 
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
