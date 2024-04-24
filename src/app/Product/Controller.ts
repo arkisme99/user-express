@@ -14,7 +14,20 @@ interface bodyType {
 
 class Product {
   async get(req: Request, res: Response, next: NextFunction): Promise<void> {
-    return await getAllProducts(req, res, next);
+    try {
+      const { currentPage, totalPage, totalData, data } = await getAllProducts(
+        req
+      );
+      res.status(200).json({
+        message: "List data product",
+        currentPage,
+        totalPage,
+        totalData,
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 
   async post(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -53,7 +66,16 @@ class Product {
   }
 
   async show(req: Request, res: Response, next: NextFunction): Promise<void> {
-    return await detailProductById(req, res, next);
+    try {
+      const data = await detailProductById(req);
+
+      res.status(200).json({
+        message: "Detail Product",
+        data,
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 
   async update(req: Request, res: Response, next: NextFunction): Promise<void> {
