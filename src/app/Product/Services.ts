@@ -1,5 +1,6 @@
 import { Request } from "express";
 import prisma from "../../utils/db";
+import { Prisma } from "@prisma/client";
 
 interface queryParam {
   page?: number;
@@ -24,6 +25,18 @@ export const getAllProducts = async (req: Request) => {
     totalData: dataCount,
     data,
   };
+};
+
+export const postDataProduct = async (data: Prisma.ProductCreateInput) => {
+  const payload = {
+    name: data.name,
+    description: data.description,
+    price: data.price,
+    stock: data.stock,
+    images: data.images,
+  };
+
+  return await prisma.product.create({ data: payload });
 };
 
 export const detailProductById = async (req: Request) => {

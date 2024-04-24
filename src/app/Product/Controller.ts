@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import upload from "../../middleware/multerSetup";
 import { saveFile } from "../../services/saveFileServices";
 import prisma from "../../utils/db";
-import { detailProductById, getAllProducts } from "./Services";
+import { detailProductById, getAllProducts, postDataProduct } from "./Services";
 
 interface bodyType {
   name: string;
@@ -32,35 +32,33 @@ class Product {
 
   async post(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const body: bodyType = req.body;
-      // console.log(body);
       let filePath = null;
-      if (body.images) {
+      if (req.body.images) {
         //use middleware multer
         upload.single("file")(req, res, async (err: any) => {
           if (err) {
             return next(err);
           }
         });
-        //save the file and get FilePath
+        //save first the file and get FilePath
         filePath = await saveFile(req);
       }
 
       const payload = {
-        name: body.name,
-        description: body.description,
-        price: body.price,
-        stock: body.stock,
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        stock: req.body.stock,
         images: filePath,
       };
 
-      const data = await prisma.product.create({ data: payload });
+      const data = await postDataProduct(payload);
       res.status(201).json({
-        status: "success",
+        message: "Success Create Product",
         data,
       });
     } catch (err) {
-      console.error("Error creating product:", err);
+      console.error("Error create product:", err);
       next(err);
     }
   }
